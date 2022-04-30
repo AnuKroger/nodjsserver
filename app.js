@@ -1,10 +1,16 @@
-var fs = require('fs'),
-  http = require('http');
+var http = require('http');
+var formidable = require('formidable');
+var fs = require('fs');
 
 http.createServer(function (req, res) {
   if (req.url == '/fileupload') {
-    res.write('File uploaded and moved!');
-    res.end();
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      var oldpath = files.filetoupload.filepath;
+      var newpath = __dirname + files.filetoupload.originalFilename;
+      res.write('File uploaded and moved!');
+      res.end();
+    });
   } else {
     if (req.url == "/") {
       req.url = "/index.html"
@@ -19,5 +25,6 @@ http.createServer(function (req, res) {
       res.writeHead(200);
       res.end(data);
     });
+
   }
 }).listen(8080);
